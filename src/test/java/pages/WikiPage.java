@@ -6,18 +6,18 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 public class WikiPage {
-    private final SelenideElement getSeach = $(".lang1");
-    private final SelenideElement findValue = $("[type=search]");
+    private final SelenideElement searchInputField = $(".lang1");
+    private final SelenideElement searchInput = $("[type=search]");
     private final SelenideElement button = $("#searchButton");
     private final SelenideElement scText = $(".mw-parser-output");
 
     public WikiPage submit(){
-        getSeach.click();
+        searchInputField.click();
 
         return this;
     }
-    public WikiPage findText(String query){
-        findValue.setValue(query);;
+    public WikiPage setSearchQuery(String query){
+        searchInput.setValue(query);;
 
         return this;
     }
@@ -26,7 +26,7 @@ public class WikiPage {
 
         return this;
     }
-    public WikiPage scanPage(String sText){
+    public WikiPage verifyTextOnPage(String sText){
         scText.shouldBe(text(sText));
 
         return this;

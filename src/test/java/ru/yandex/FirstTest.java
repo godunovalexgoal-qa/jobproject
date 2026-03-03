@@ -1,16 +1,10 @@
 package ru.yandex;
 
-import com.codeborne.selenide.ClickOptions;
-import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import pages.WikiPage;
-import pages.YandexSearchPage;
-import pages.YandexSearchResultsPage;
+import pages.*;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
 
 public class FirstTest {
@@ -21,14 +15,35 @@ public class FirstTest {
 //        Configuration.pageLoadTimeout = 100000;
 //        Configuration.timeout = 100000;
 //        Configuration.holdBrowserOpen = true;
-        open("https://ya.ru/", YandexSearchPage.class)
+        YandexSearchPage yandexSearchPage = new YandexSearchPage();
+        YandexSearchResultsPage yandexSearchResultsPage = new YandexSearchResultsPage();
+        WelcomePage welcomePage = new WelcomePage();
+        PaymountPage paymountPage = new PaymountPage();
+
+        open("https://ya.ru/");
+        yandexSearchPage
                 .search("bulgakov qa")
-                .submit()
+                .submit();
+
+        sleep(3000);
+
+        yandexSearchResultsPage
                 .closeDefaultBrowserSelectWindow()
-                .openLink("ivanbulgakovqa.ru")
+                .openLink("ivanbulgakovqa.ru");
+
+//        sleep(3000);
+        switchTo().window(1);
+        sleep(3000);
+
+        welcomePage
                 .clickPrice()
-                .justDoIt()
-                .payDo()
+                .submitSearch()
+                .payDo();
+
+        switchTo().window(2);
+        sleep(3000);
+
+        paymountPage
                 .CheckPrice47K("₽ 47 000.00");
 
     }
@@ -41,9 +56,9 @@ public class FirstTest {
         //        Configuration.holdBrowserOpen = true;
         open("https://www.wikipedia.org/", WikiPage.class)
                 .submit()
-                .findText("Тестировщик")
+                .setSearchQuery("Тестировщик")
                 .startSearch()
-                .scanPage("Тестировщик");
+                .verifyTextOnPage("Тестировщик");
 
     }
 

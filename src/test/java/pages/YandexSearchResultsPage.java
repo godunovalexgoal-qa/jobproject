@@ -10,16 +10,15 @@ public class YandexSearchResultsPage {
     private final SelenideElement closeWindow = $(".DistributionButtonClose");
 
     public YandexSearchResultsPage closeDefaultBrowserSelectWindow() {
-        sleep(3000);
         closeWindow.click();
 
         return this;
 
     }
-    public WelcomePage openLink(String websiteName) {
+    public YandexSearchResultsPage openLink(String websiteName) {
         $(byText(websiteName)).click();
 
-        return new WelcomePage();
+        return this;
 
     }
 }
