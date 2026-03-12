@@ -14,8 +14,10 @@ public class RegistrationTest {
     @Test
     void registrationTest() {
         Configuration.holdBrowserOpen = true;
+
         String password = faker.harryPotter().character() + faker.number().positive();
         String email = faker.internet().emailAddress();
+
         open(WEB_SHOP_URL, WSWelcomePage.class)
                 .openRegistration()
                 .verifyRegistrationOpened()
@@ -28,10 +30,5 @@ public class RegistrationTest {
                 .submitRegistration()
                 .cheekRegistrationCompleted()
                 .cheekUserLogeedIn(email);
-
-
-
     }
-
-
 }

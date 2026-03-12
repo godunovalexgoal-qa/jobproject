@@ -7,48 +7,49 @@ import ru.bulgakov.webshop.pages.*;
 import ru.bulgakov.webshop.steps.AuthSteps;
 
 import static com.codeborne.selenide.Selenide.*;
+import static java.util.Locale.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.bulgakov.webshop.config.Config.WEB_SHOP_URL;
 
 public class CartTest {
-    private final AuthSteps authSteps = new AuthSteps();
-    @BeforeEach
-    void beforeEach(){
-       Configuration.holdBrowserOpen = true;
-       authSteps.registerNewUser();
-    }
-    @Test
-    void addItemToCartTest(){
-        WSItemCard wsItemCard = new WSItemCard();
-        WSCatalogPage wsCatalogPage = new WSCatalogPage();
-        WSCartPage wsCartPage = new WSCartPage();
-        WSWelcomePage wsWelcomePage = new WSWelcomePage();
+  private final AuthSteps authSteps = new AuthSteps();
 
-        open(WEB_SHOP_URL);
-        wsWelcomePage
-                .hoverBar()
-                .selectDesctop();
-        wsCatalogPage
-                .chooseItem();
+  @BeforeEach
+  void beforeEach() {
+    Configuration.browserSize = "1920x1080";
 
-        String itemName = wsItemCard.getProductName();
-        String itemPrice = wsItemCard.getProductPrice();
-        String itemQuantity = "2";
-//        int processorIndex = 0; // 0 = slow, 1 = medium, 2 = fast
+    authSteps.registerNewUser();
+  }
 
+  @Test
+  void addItemToCartTest() {
+    WSItemCard wsItemCard = open(WEB_SHOP_URL, WSWelcomePage.class)
+        .hoverBar()
+        .selectDesctop()
+        .chooseItem(0);
 
-        wsItemCard
-                .selectProcessor(0)
-                .setQuantity(itemQuantity)
-                .addToCart()
-                .checkNotificationBar()
-                .closeNotificationBar()
-                .checkQuantity(itemQuantity)
-                .goToCart();
-        wsCartPage
-                .checkItemName(itemName)
-                .checkSumm(itemQuantity,itemPrice)
-                .checkQuantity(itemQuantity);
+    String itemName = wsItemCard.getProductName();
+    String itemPrice = wsItemCard.getProductPrice();
+    String itemQuantity = "2";
+    int processorIndex = 0; // 0 = slow, 1 = medium, 2 = fast
 
+    WSCartPage cartPage = wsItemCard
+        .selectProcessor(processorIndex)
+        .setQuantity(itemQuantity)
+        .addToCart()
+        .checkNotificationBar()
+        .closeNotificationBar()
+        .checkQuantity(itemQuantity)
+        .goToCart();
 
-    }
+    String expectedSum = String.format(
+        US,
+        "%.2f",
+        Float.parseFloat(itemPrice) * Float.parseFloat(itemQuantity)
+    );
+
+    assertEquals(itemName, cartPage.getItemName());
+    assertEquals(expectedSum, cartPage.getSubtotal());
+    assertEquals(itemQuantity, cartPage.getQuantity());
+  }
 }

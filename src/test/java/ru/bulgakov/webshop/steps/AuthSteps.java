@@ -15,6 +15,5 @@ public class AuthSteps {
                         faker.name().lastName(),
                         faker.internet().emailAddress(),
                         faker.harryPotter().character() + faker.number().positive());
-
     }
 }
