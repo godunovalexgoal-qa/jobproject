@@ -10,61 +10,69 @@ import static com.codeborne.selenide.Selenide.$$;
 
 public class WSItemCard {
     private final ElementsCollection selectBrutto = $$("dl dd ul li");
-    private final SelenideElement amountInput = $(".qty-input");
-    private final SelenideElement addToCartButton = $("#add-to-cart-button-72");
-    private final SelenideElement notificationBar = $("div#bar-notification");
-    private final SelenideElement submitCloseNotificationBar = $("span.close");
-    private final SelenideElement cartQuantityLabel = $("span.cart-qty");
-    private final SelenideElement cartIconButton = $("a.ico-cart");
+    private final SelenideElement amountInput = $(".qty-input"),
+            addToCartButton = $("#add-to-cart-button-72"),
+            notificationBar = $("div#bar-notification"),
+            submitCloseNotificationBar = $("span.close"),
+            cartQuantityLabel = $("span.cart-qty"),
+            cartIconButton = $("a.ico-cart");
 
     public String getProductName(){
         return $("[itemprop=name]").getText();
 
     }
+
     public String getProductPrice(){
         return $("[itemprop=price]").getText();
 
     }
+
     public WSItemCard selectProcessor(int index) {
         // index 0 = slow, 1 = medium, 2 = fast
         selectBrutto.get(index).$$("li input").get(0).click();
 
         return this;
     }
+
     public WSItemCard setQuantity(String itemQuantity){
         amountInput.setValue(itemQuantity);
 
         return this;
 
     }
+
     public WSItemCard addToCart(){
         addToCartButton.click();
 
         return this;
 
     }
+
     public WSItemCard checkNotificationBar(){
         notificationBar.shouldBe(visible);
 
         return this;
 
     }
+
     public WSItemCard closeNotificationBar(){
         submitCloseNotificationBar.click();
 
         return this;
 
     }
+
     public WSItemCard checkQuantity(String itemQuantity){
         cartQuantityLabel.shouldHave(text("(" + itemQuantity + ")"));
 
         return this;
 
     }
-    public WSItemCard goToCart(){
+
+    public WSCartPage goToCart(){
         cartIconButton.click();
 
-        return this;
+        return new WSCartPage();
 
     }
 }

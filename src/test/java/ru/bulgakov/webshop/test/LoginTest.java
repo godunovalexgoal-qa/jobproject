@@ -1,12 +1,10 @@
 package ru.bulgakov.webshop.test;
 
-import com.codeborne.selenide.Configuration;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.bulgakov.webshop.pages.WSLoginPage;
 import ru.bulgakov.webshop.pages.WSRegistrationPage;
-import ru.bulgakov.webshop.pages.WSWelcomePage;
 
 import static com.codeborne.selenide.Selenide.*;
 import static ru.bulgakov.webshop.config.Config.WEB_SHOP_REGISTRATION_URL;
@@ -16,6 +14,7 @@ public class LoginTest {
     private static final Faker faker = new Faker();
     private String email;
     private String password;
+
     @BeforeEach
     void beforeAll(){
         password = faker.harryPotter().character() + faker.number().positive();
@@ -30,8 +29,8 @@ public class LoginTest {
 
         clearBrowserLocalStorage();
         clearBrowserCookies();
-
     }
+
     @Test
     void successLoginTest(){
         open(WEB_SHOP_URL, WSLoginPage.class)
@@ -42,10 +41,5 @@ public class LoginTest {
                 .checkRememberMe()
                 .submitLogin()
                 .cheekUserLoggedIn(email);
-
-
     }
-
 }
-
-
