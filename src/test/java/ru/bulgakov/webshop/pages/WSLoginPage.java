@@ -4,6 +4,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
@@ -49,6 +50,12 @@ public class WSLoginPage {
     }
     public WSLoginPage submitLogin(){
         buttonLogin.click();
+
+        return this;
+
+    }
+    public WSLoginPage verifyEmailValidation(){
+        $("span.field-validation-error").shouldBe(visible);
 
         return this;
 

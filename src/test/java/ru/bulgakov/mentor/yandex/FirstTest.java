@@ -4,13 +4,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import ru.bulgakov.mentor.pages.*;
+import ru.bulgakov.webshop.TestBase;
 
 import static com.codeborne.selenide.Selenide.*;
 
-public class FirstTest {
+public class FirstTest extends TestBase {
     @Test
     @DisplayName("Проверить, что цена обучения 47 000 рублей")
-    @Tag("POSITIVE")
+    @Tag("positive")
     void mentoringPriceShouldBe47kTest () {
 //        Configuration.pageLoadTimeout = 100000;
 //        Configuration.timeout = 100000;
@@ -49,7 +50,7 @@ public class FirstTest {
     }
     @Test
     @DisplayName("Учебный поиск на странице")
-    @Tag("POSITIVE")
+    @Tag("negative")
     void findNewTask () {
         //        Configuration.pageLoadTimeout = 100000;
         //        Configuration.timeout = 100000;

@@ -7,7 +7,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class WSCartPage {
+public class WSCartPage  {
     private final SelenideElement checkNameItem = $("a.product-name");
     private final SelenideElement summCheck = $("span.product-subtotal");
     private final SelenideElement quantityCheck = $("input.qty-input");

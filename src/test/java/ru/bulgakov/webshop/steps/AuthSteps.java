@@ -1,6 +1,7 @@
 package ru.bulgakov.webshop.steps;
 
 import net.datafaker.Faker;
+import ru.bulgakov.webshop.TestBase;
 import ru.bulgakov.webshop.pages.WSRegistrationPage;
 
 import static com.codeborne.selenide.Selenide.open;
