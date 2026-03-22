@@ -1,12 +1,34 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version "3.0.2"
 }
+
+def allureVersion = "2.33.0"
+
+allure {
+    report {
+        version.set(allureVersion)          // Устанавливаем версию Allure
+    }
+
+    adapter {
+        aspectjWeaver.set(true)             // Включаем AspectJ weaving для Allure
+
+        frameworks {
+            junit5 {
+                adapterVersion.set(allureVersion)  // Версия адаптера для JUnit 5
+            }
+        }
+    }
+}
+
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    testImplementation "io.qameta.allure:allure-junit5:$allureVersion"
+    testImplementation "io.qameta.allure:allure-selenide:$allureVersion"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
     testImplementation 'com.codeborne:selenide:7.14.0'
     testImplementation 'net.datafaker:datafaker:2.5.4'

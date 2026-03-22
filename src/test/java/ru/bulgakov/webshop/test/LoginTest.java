@@ -1,70 +1,80 @@
 package ru.bulgakov.webshop.test;
 
-import com.codeborne.selenide.Configuration;
+import io.qameta.allure.*;
 import net.datafaker.Faker;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import ru.bulgakov.webshop.TestBase;
 import ru.bulgakov.webshop.pages.WSLoginPage;
 import ru.bulgakov.webshop.pages.WSRegistrationPage;
-import ru.bulgakov.webshop.pages.WSWelcomePage;
 
 import static com.codeborne.selenide.Selenide.*;
-import static ru.bulgakov.webshop.config.Config.WEB_SHOP_REGISTRATION_URL;
-import static ru.bulgakov.webshop.config.Config.WEB_SHOP_URL;
+import static ru.bulgakov.webshop.config.Config.*;
 
 public class LoginTest extends TestBase {
     private static final Faker faker = new Faker();
     private String email;
     private String password;
-    @BeforeEach
-    void beforeEach(){
-        password = faker.harryPotter().character() + faker.number().positive();
-        email = faker.internet().emailAddress();
-        open(WEB_SHOP_REGISTRATION_URL, WSRegistrationPage.class)
-                .register(
-                        faker.name().firstName(),
-                        faker.name().lastName(),
-                        email,
-                        password)
-                .cheekUserLogeedIn(email);
 
-        clearBrowserLocalStorage();
-        clearBrowserCookies();
+    @Nested
+    public class PositiveTests {
+        @BeforeEach
+        void beforeEach(){
+            password = faker.harryPotter().character() + faker.number().positive();
+            email = faker.internet().emailAddress();
+            open(WEB_SHOP_REGISTRATION_URL, WSRegistrationPage.class)
+                    .register(
+                            faker.name().firstName(),
+                            faker.name().lastName(),
+                            email,
+                            password)
+                    .cheekUserLogeedIn(email);
+
+            clearBrowserLocalStorage();
+            clearBrowserCookies();
+
+        }
+        @Test
+        @DisplayName("Тест Log in")
+        @Tag("positive")
+        @Severity(SeverityLevel.CRITICAL)
+        @Epic("ВебШоп")
+        @Feature("Тестовый сайт интернет магазина")
+        @Story("Тестирование авторизации пользователя")
+        @Issue("Bag-125")
+        @Description("Проверка возможности пользователя осуществить авторизацию")
+        @Owner("alex_god")
+        @Link(name = "TASK-124", url = "https://...")
+        void successLoginTest(){
+            open(WEB_SHOP_URL, WSLoginPage.class)
+                    .buttonLogin()
+                    .checkLoginPageOpened()
+                    .enterEmail(email)
+                    .enterPassword(password)
+                    .checkRememberMe()
+                    .submitLogin()
+                    .cheekUserLoggedIn(email);
+        }
 
     }
-    @Test
-    @DisplayName("Тест Log in")
-    @Tag("positive")
-    void successLoginTest(){
-        open(WEB_SHOP_URL, WSLoginPage.class)
-                .buttonLogin()
-                .checkLoginPageOpened()
-                .enterEmail(email)
-                .enterPassword(password)
-                .checkRememberMe()
-                .submitLogin()
-                .cheekUserLoggedIn(email);
 
-
-    }
-
-    @ParameterizedTest
-    @DisplayName("Проверка формы на невалидные данные")
+    @ParameterizedTest(name = "Авторизация с невалидным email: {0}")
     @CsvFileSource(resources = "/email.csv")
     @Tag("negative")
+    @Severity(SeverityLevel.BLOCKER)
+    @Epic("ВебШоп")
+    @Feature("Тестовый сайт интернет магазина")
+    @Story("Тестирование валидации email")
+    @Issue("Bag-125")
+    @Description("Проверка валации email при осуществлении авторизации пользователя")
+    @Owner("alex_god")
+    @Link(name = "TASK-125", url = "https://...")
     void invalidEmailLoginTest(String email) {
-        open(WEB_SHOP_URL, WSLoginPage.class)
-                .buttonLogin()
-                .checkLoginPageOpened()
+        open(WEB_SHOP_LOGIN_URL, WSLoginPage.class)
                 .enterEmail(email)
                 .submitLogin()
                 .verifyEmailValidation();
-
     }
 
 

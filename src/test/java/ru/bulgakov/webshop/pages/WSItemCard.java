@@ -2,6 +2,7 @@ package ru.bulgakov.webshop.pages;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
@@ -25,42 +26,49 @@ public class WSItemCard {
         return $("[itemprop=price]").getText();
 
     }
+    @Step("Выбрать процессор {index}")
     public WSItemCard selectProcessor(int index) {
         // index 0 = slow, 1 = medium, 2 = fast
         selectBrutto.get(index).$$("li input").get(0).click();
 
         return this;
     }
+    @Step("Выбрать количество {itemQuantity}")
     public WSItemCard setQuantity(String itemQuantity){
         amountInput.setValue(itemQuantity);
 
         return this;
 
     }
+    @Step("Нажать кнопку добавить в корзину")
     public WSItemCard addToCart(){
         addToCartButton.click();
 
         return this;
 
     }
+    @Step("Проверить наличие панели уведомления")
     public WSItemCard checkNotificationBar(){
         notificationBar.shouldBe(visible);
 
         return this;
 
     }
+    @Step("Закрыть панель уведомления")
     public WSItemCard closeNotificationBar(){
         submitCloseNotificationBar.click();
 
         return this;
 
     }
+    @Step("Проверить количество {itemQuantity}")
     public WSItemCard checkQuantity(String itemQuantity){
         cartQuantityLabel.shouldHave(text("(" + itemQuantity + ")"));
 
         return this;
 
     }
+    @Step("Нажать кнопку перейти в корзину")
     public WSItemCard goToCart(){
         cartIconButton.click();
 

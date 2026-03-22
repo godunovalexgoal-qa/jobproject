@@ -1,6 +1,7 @@
 package ru.bulgakov.webshop.test;
 
 import com.codeborne.selenide.Configuration;
+import io.qameta.allure.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -22,6 +23,14 @@ public class CartTest extends TestBase {
     @Test
     @DisplayName("Тест полного цикла покупки")
     @Tag("positive")
+    @Severity(SeverityLevel.NORMAL)
+    @Epic("ВебШоп")
+    @Feature("Тестовый сайт интернет магазина")
+    @Story("Тестирование пользовательского пути (Покупка товара)")
+    @Issue("Bag-125")
+    @Description("Проверка возможности пользователя осуществить покупку товара в магазине")
+    @Owner("alex_god")
+    @Link(name = "TASK-123", url = "https://...")
     void addItemToCartTest(){
         WSItemCard wsItemCard = new WSItemCard();
         WSCatalogPage wsCatalogPage = new WSCatalogPage();
@@ -53,7 +62,5 @@ public class CartTest extends TestBase {
                 .checkItemName(itemName)
                 .checkSumm(itemQuantity,itemPrice)
                 .checkQuantity(itemQuantity);
-
-
     }
 }

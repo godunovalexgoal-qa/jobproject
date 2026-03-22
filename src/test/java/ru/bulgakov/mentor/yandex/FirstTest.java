@@ -1,5 +1,6 @@
 package ru.bulgakov.mentor.yandex;
 
+import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,14 @@ public class FirstTest extends TestBase {
     @Test
     @DisplayName("Проверить, что цена обучения 47 000 рублей")
     @Tag("positive")
+    @Severity(SeverityLevel.TRIVIAL)
+    @Epic("Яндекс")
+    @Feature("Булгаков")
+    @Story("Хочу вкатиться Булгакой QA")
+    @Issue("Bag-123")
+    @Description("Поиск страницы ментора для установления стоимости курса")
+    @Owner("alex_god")
+    @Link(name = "TASK-121", url = "https://...")
     void mentoringPriceShouldBe47kTest () {
 //        Configuration.pageLoadTimeout = 100000;
 //        Configuration.timeout = 100000;
@@ -51,6 +60,14 @@ public class FirstTest extends TestBase {
     @Test
     @DisplayName("Учебный поиск на странице")
     @Tag("negative")
+    @Severity(SeverityLevel.MINOR)
+    @Epic("Вики")
+    @Feature("Поиск на википедии")
+    @Story("Поиск информации о тестировщике")
+    @Issue("Bag-124")
+    @Description("Поиск страницы с подробной информацией о тестировщике")
+    @Owner("alex_god")
+    @Link(name = "TASK-122", url = "https://...")
     void findNewTask () {
         //        Configuration.pageLoadTimeout = 100000;
         //        Configuration.timeout = 100000;

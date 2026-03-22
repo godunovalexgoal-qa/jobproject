@@ -1,6 +1,7 @@
 package ru.bulgakov.webshop.test;
 
 import com.codeborne.selenide.Configuration;
+import io.qameta.allure.*;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -17,6 +18,14 @@ public class RegistrationTest extends TestBase {
     @Test
     @DisplayName("Тест регистрации")
     @Tag("positive")
+    @Severity(SeverityLevel.CRITICAL)
+    @Epic("ВебШоп")
+    @Feature("Тестовый сайт интернет магазина")
+    @Story("Тестирование регистрации")
+    @Issue("Bag-125")
+    @Description("Проверка возможности пользователя осуществить регистрацию")
+    @Owner("alex_god")
+    @Link(name = "TASK-126", url = "https://...")
     void registrationTest() {
 //        Configuration.holdBrowserOpen = true;
         String password = faker.harryPotter().character() + faker.number().positive();
