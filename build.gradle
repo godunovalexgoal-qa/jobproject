@@ -39,14 +39,42 @@ test {
     useJUnitPlatform()
 }
 
-task positiveTest(type: Test) {
+task uiTest(type: Test) {
     useJUnitPlatform {
-        includeTags 'positive'
+        def tag = System.getProperty("tag")
+        // если тэг указан - запускаем ui + тэг тест
+        // если нет - только ui
+        if (tag != null && !tag.isBlank()) {
+            includeTags("UI & ${tag}")
+        } else {
+            includeTags("UI")
+        }
     }
+    systemProperties(System.getProperties())
 }
 
-task negativeTest(type: Test) {
+task apiTest(type: Test) {
     useJUnitPlatform {
-        includeTags 'negative'
+        def tag = System.getProperty("tag")
+        // если тэг указан - запускаем ui + тэг тест
+        // если нет - только ui
+        if (tag != null && !tag.isBlank()) {
+            includeTags("API & ${tag}")
+        } else {
+            includeTags("API")
+        }
     }
+    systemProperties(System.getProperties())
 }
+
+//task positiveTest(type: Test) {
+//    useJUnitPlatform {
+//        includeTags 'positive'
+//    }
+//}
+
+//task negativeTest(type: Test) {
+//    useJUnitPlatform {
+//        includeTags 'negative'
+//    }
+//}

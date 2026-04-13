@@ -17,7 +17,7 @@ public class RegistrationTest extends TestBase {
 
     @Test
     @DisplayName("Тест регистрации")
-    @Tag("positive")
+//    @Tag("positive")
     @Severity(SeverityLevel.CRITICAL)
     @Epic("ВебШоп")
     @Feature("Тестовый сайт интернет магазина")

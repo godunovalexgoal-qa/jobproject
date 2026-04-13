@@ -22,7 +22,7 @@ public class CartTest extends TestBase {
     }
     @Test
     @DisplayName("Тест полного цикла покупки")
-    @Tag("positive")
+//    @Tag("positive")
     @Severity(SeverityLevel.NORMAL)
     @Epic("ВебШоп")
     @Feature("Тестовый сайт интернет магазина")

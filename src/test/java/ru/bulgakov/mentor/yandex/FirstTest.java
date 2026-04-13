@@ -12,7 +12,7 @@ import static com.codeborne.selenide.Selenide.*;
 public class FirstTest extends TestBase {
     @Test
     @DisplayName("Проверить, что цена обучения 47 000 рублей")
-    @Tag("positive")
+//    @Tag("positive")
     @Severity(SeverityLevel.TRIVIAL)
     @Epic("Яндекс")
     @Feature("Булгаков")
@@ -59,7 +59,7 @@ public class FirstTest extends TestBase {
     }
     @Test
     @DisplayName("Учебный поиск на странице")
-    @Tag("negative")
+//    @Tag("negative")
     @Severity(SeverityLevel.MINOR)
     @Epic("Вики")
     @Feature("Поиск на википедии")
