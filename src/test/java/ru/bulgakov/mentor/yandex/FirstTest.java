@@ -3,6 +3,7 @@ package ru.bulgakov.mentor.yandex;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import ru.bulgakov.mentor.pages.*;
 import ru.bulgakov.webshop.TestBase;
@@ -12,7 +13,7 @@ import static com.codeborne.selenide.Selenide.*;
 public class FirstTest extends TestBase {
     @Test
     @DisplayName("Проверить, что цена обучения 47 000 рублей")
-//    @Tag("positive")
+    @Tags({@Tag("UI"), @Tag("positive")})
     @Severity(SeverityLevel.TRIVIAL)
     @Epic("Яндекс")
     @Feature("Булгаков")
@@ -59,7 +60,7 @@ public class FirstTest extends TestBase {
     }
     @Test
     @DisplayName("Учебный поиск на странице")
-//    @Tag("negative")
+    @Tags({@Tag("UI"), @Tag("negative")})
     @Severity(SeverityLevel.MINOR)
     @Epic("Вики")
     @Feature("Поиск на википедии")

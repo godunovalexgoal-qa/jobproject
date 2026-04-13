@@ -5,6 +5,7 @@ import io.qameta.allure.*;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import ru.bulgakov.webshop.TestBase;
 import ru.bulgakov.webshop.pages.WSWelcomePage;
@@ -17,7 +18,7 @@ public class RegistrationTest extends TestBase {
 
     @Test
     @DisplayName("Тест регистрации")
-//    @Tag("positive")
+    @Tags({@Tag("UI"), @Tag("positive")})
     @Severity(SeverityLevel.CRITICAL)
     @Epic("ВебШоп")
     @Feature("Тестовый сайт интернет магазина")

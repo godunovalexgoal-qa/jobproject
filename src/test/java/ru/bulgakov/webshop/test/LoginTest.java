@@ -37,7 +37,7 @@ public class LoginTest extends TestBase {
         }
         @Test
         @DisplayName("Тест Log in")
-//        @Tag("positive")
+        @Tags({@Tag("UI"), @Tag("positive")})
         @Severity(SeverityLevel.CRITICAL)
         @Epic("ВебШоп")
         @Feature("Тестовый сайт интернет магазина")
@@ -61,7 +61,7 @@ public class LoginTest extends TestBase {
 
     @ParameterizedTest(name = "Авторизация с невалидным email: {0}")
     @CsvFileSource(resources = "/email.csv")
-//    @Tag("negative")
+    @Tags({@Tag("UI"), @Tag("negative")})
     @Severity(SeverityLevel.BLOCKER)
     @Epic("ВебШоп")
     @Feature("Тестовый сайт интернет магазина")

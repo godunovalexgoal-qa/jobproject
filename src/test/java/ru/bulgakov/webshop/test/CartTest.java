@@ -2,10 +2,7 @@ package ru.bulgakov.webshop.test;
 
 import com.codeborne.selenide.Configuration;
 import io.qameta.allure.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import ru.bulgakov.webshop.TestBase;
 import ru.bulgakov.webshop.pages.*;
 import ru.bulgakov.webshop.steps.AuthSteps;
@@ -22,7 +19,7 @@ public class CartTest extends TestBase {
     }
     @Test
     @DisplayName("Тест полного цикла покупки")
-//    @Tag("positive")
+    @Tags({@Tag("UI"), @Tag("positive")})
     @Severity(SeverityLevel.NORMAL)
     @Epic("ВебШоп")
     @Feature("Тестовый сайт интернет магазина")
