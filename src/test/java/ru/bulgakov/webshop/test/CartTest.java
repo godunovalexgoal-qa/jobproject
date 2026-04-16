@@ -12,11 +12,13 @@ import static ru.bulgakov.webshop.config.Config.WEB_SHOP_URL;
 
 public class CartTest extends TestBase {
     private final AuthSteps authSteps = new AuthSteps();
+
     @BeforeEach
     void beforeEach(){
 //       Configuration.holdBrowserOpen = true;
        authSteps.registerNewUser();
     }
+
     @Test
     @DisplayName("Тест полного цикла покупки")
     @Tags({@Tag("UI"), @Tag("positive")})
