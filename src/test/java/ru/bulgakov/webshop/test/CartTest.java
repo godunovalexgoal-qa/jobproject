@@ -21,7 +21,7 @@ public class CartTest extends TestBase {
 
     @Test
     @DisplayName("Тест полного цикла покупки")
-//    @Tags({@Tag("UI"), @Tag("positive")})
+    @Tags({@Tag("UI"), @Tag("positive")})
     @Severity(SeverityLevel.NORMAL)
     @Epic("ВебШоп")
     @Feature("Тестовый сайт интернет магазина")

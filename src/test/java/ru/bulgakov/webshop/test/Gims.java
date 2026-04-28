@@ -1,6 +1,5 @@
 package ru.bulgakov.webshop.test;
 
-import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -12,7 +11,7 @@ import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Condition.visible;
 
-public class GimsTest {
+public class Gims {
     @Test
     @DisplayName("Тест прогона до нужного вопроса")
     @Tags({@Tag("UI"), @Tag("positive")})
