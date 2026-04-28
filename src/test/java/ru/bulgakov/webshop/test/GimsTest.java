@@ -19,7 +19,7 @@ public class GimsTest {
     void studyGimsTest() {
 //        Configuration.browser = "chrome"; // выбор браузера
 //        Configuration.holdBrowserOpen = true;
-        String numberList = "538";
+        String numberList = "5";
 
         open("https://digital.mchs.gov.ru/gims/simulator");
         $$(".form-check-label").last().click();
