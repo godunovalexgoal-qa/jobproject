@@ -19,17 +19,17 @@ public class Gims extends TestBase {
     void studyGimsTest() {
 //        Configuration.browser = "chrome"; // выбор браузера
 //        Configuration.holdBrowserOpen = true;
-        String numberList = "5";
+        String numberList = System.getProperty("QUESTION_NUMBER", "538");
 
         open("https://digital.mchs.gov.ru/gims/simulator");
         $$(".form-check-label").last().click();
         $("#gims_simulator_form_send").shouldBe(visible).click();
-        sleep(3000);
+//        sleep(3000);
         $$(".answers-label").last().click();
         $(".button-step").shouldBe(visible).click();
         $(".button-step").shouldBe(visible).click();
         while (!$("[data-name='question-number']").shouldBe(visible).getText().equals(numberList)) {
-            sleep(3000);
+//            sleep(3000);
             $$(".answers-label").last().click();
             $(".button-step").shouldBe(visible).click();
             $(".button-step").shouldBe(visible).click();
