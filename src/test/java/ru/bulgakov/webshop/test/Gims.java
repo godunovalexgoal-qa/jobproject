@@ -25,12 +25,12 @@ public class Gims extends TestBase {
         open("https://digital.mchs.gov.ru/gims/simulator");
         $$(".form-check-label").last().click();
         $("#gims_simulator_form_send").shouldBe(visible).click();
-//        sleep(3000);
+        sleep(3000);
         $$(".answers-label").last().click();
         $(".button-step").shouldBe(visible).click();
         $(".button-step").shouldBe(visible).click();
         while (!$("[data-name='question-number']").shouldBe(visible).getText().equals(numberList)) {
-//            sleep(3000);
+            sleep(3000);
             $$(".answers-label").last().click();
             $(".button-step").shouldBe(visible).click();
             $(".button-step").shouldBe(visible).click();
