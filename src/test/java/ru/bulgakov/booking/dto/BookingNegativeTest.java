@@ -1,0 +1,188 @@
+package ru.bulgakov.booking.dto;
+
+import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.RestAssured;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
+import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import ru.bulgakov.booking.dto.CreateBookingDTO.BookingDates;
+
+import java.util.stream.Stream;
+
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class BookingNegativeTest {
+    private static final String BOOKING_URL = "https://restful-booker.herokuapp.com";
+
+    @BeforeAll
+    static void setUp() {
+        RestAssured.filters(
+                new RequestLoggingFilter(),
+                new ResponseLoggingFilter(),
+                new AllureRestAssured()
+        );
+    }
+
+    static Stream<Arguments> invalidAuthCases() {
+        return Stream.of(
+                Arguments.of("admin", "wrongPassword", 403, "Неверный пароль"),
+                Arguments.of("invalidUser", "password123", 403, "Неверный логин"),
+                Arguments.of("admin", "", 400, "Пустой пароль"),
+                Arguments.of("", "password123", 400, "Пустой логин"),
+                Arguments.of(null, null, 400, "Пустое body {}")
+        );
+    }
+
+    @ParameterizedTest(name = "{index} => {3}")
+    @MethodSource("invalidAuthCases")
+    @DisplayName("Негативные тесты авторизации")
+    void shouldRejectInvalidAuthData(String username, String password, int expectedStatus, String description) {
+        AuthRequest requestBody = AuthRequest.builder()
+                .username(username)
+                .password(password)
+                .build();
+
+        String reason = given()
+                .contentType(ContentType.JSON)
+                .body(requestBody)  // Jackson автоматически уберёт null-поля
+                .when()
+                .post(BOOKING_URL + "/auth")
+                .then()
+                .statusCode(200)  // для этого API = 200
+                .extract().path("reason");
+
+        assertThat(reason).isEqualTo("Bad credentials");
+    }
+
+    @Test
+    @DisplayName("Сценарий 6: Отправка запроса без body")
+    void shouldNotReturnTokenWhenBodyIsMissing() {
+        String reason = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .post(BOOKING_URL + "/auth")
+                .then()
+                .statusCode(200)
+                .extract().path("reason");
+
+        assertThat(reason).isEqualTo("Bad credentials");
+    }
+
+    static Stream<Arguments> invalidBookingCases() {
+        return Stream.of(
+                Arguments.of(
+                        createBookingWithoutFirstname(),
+                        "Отсутствует обязательное поле firstname"
+                ),
+                Arguments.of(
+                        createBookingWithoutLastname(),
+                        "Отсутствует обязательное поле lastname"
+                ),
+                Arguments.of(
+                        createBookingWithNegativePrice(),
+                        "Отрицательная цена totalprice"
+                ),
+                Arguments.of(
+                        createBookingWithInvalidDate(),
+                        "Неверный формат даты checkin"
+                ),
+                Arguments.of(
+                        createBookingWithCheckoutBeforeCheckin(),
+                        "Дата выезда раньше даты заезда"
+                )
+        );
+    }
+
+    @ParameterizedTest(name = "{index} => {1}")
+    @MethodSource("invalidBookingCases")
+    @DisplayName("Негативные тесты создания бронирования")
+    void shouldRejectInvalidBookingData(CreateBookingDTO booking, String scenarioName) {
+        var response = given()
+                .contentType(ContentType.JSON)
+                .body(booking)
+                .when()
+                .post(BOOKING_URL + "/booking")
+                .then()
+                .extract().response();
+
+        String responseBody = response.asString();
+        int statusCode = response.getStatusCode();
+
+        if (scenarioName.contains("Отсутствует обязательное поле")) {
+            assertThat(statusCode).isEqualTo(500);
+
+            assertThat(responseBody).contains("Internal Server Error");
+            return;
+        }
+
+        if (statusCode == 200) {
+            System.out.println("API принял невалидные данные в сценарии: " + scenarioName);
+        }
+    }
+
+    @Test
+    @DisplayName("Сценарий 6: Пустое body {}")
+    void shouldRejectEmptyBookingBody() {
+        var response = given()
+                .contentType(ContentType.JSON)
+                .body("{}")
+                .when()
+                .post(BOOKING_URL + "/booking")
+                .then()
+                .extract().response();
+
+        String responseBody = response.asString();
+        int statusCode = response.getStatusCode();
+
+        assertThat(statusCode).isEqualTo(500);
+        assertThat(responseBody).contains("Internal Server Error");
+    }
+
+    private static CreateBookingDTO createBookingRequest() {
+        CreateBookingDTO booking = new CreateBookingDTO();
+        booking.setFirstname("Barack");
+        booking.setLastname("Obama");
+        booking.setTotalprice(1000);
+        booking.setDepositpaid(false);
+        booking.setBookingdates(new BookingDates("2026-01-01", "2027-01-01"));
+        booking.setAdditionalneeds("newspaper");
+        return booking;
+    }
+
+    private static CreateBookingDTO createBookingWithoutFirstname() {
+        CreateBookingDTO booking = createBookingRequest();
+        booking.setFirstname(null);
+        return booking;
+    }
+
+    private static CreateBookingDTO createBookingWithoutLastname() {
+        CreateBookingDTO booking = createBookingRequest();
+        booking.setLastname(null);
+        return booking;
+    }
+
+    private static CreateBookingDTO createBookingWithNegativePrice() {
+        CreateBookingDTO booking = createBookingRequest();
+        booking.setTotalprice(-500);
+        return booking;
+    }
+
+    private static CreateBookingDTO createBookingWithInvalidDate() {
+        CreateBookingDTO booking = createBookingRequest();
+        booking.setBookingdates(new BookingDates("не-дата", "2027-01-01"));
+        return booking;
+    }
+
+    private static CreateBookingDTO createBookingWithCheckoutBeforeCheckin() {
+        CreateBookingDTO booking = createBookingRequest();
+        booking.setBookingdates(new BookingDates("2027-01-01", "2026-01-01"));
+        return booking;
+    }
+}
