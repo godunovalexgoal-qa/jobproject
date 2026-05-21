@@ -5,6 +5,7 @@ import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,47 +33,12 @@ public class BookingNegativeTest {
 
     static Stream<Arguments> invalidAuthCases() {
         return Stream.of(
-                Arguments.of("admin", "wrongPassword", 403, "Неверный пароль"),
-                Arguments.of("invalidUser", "password123", 403, "Неверный логин"),
-                Arguments.of("admin", "", 400, "Пустой пароль"),
-                Arguments.of("", "password123", 400, "Пустой логин"),
-                Arguments.of(null, null, 400, "Пустое body {}")
+                Arguments.of("admin", "wrongPassword", "Неверный пароль"),
+                Arguments.of("invalidUser", "password123", "Неверный логин"),
+                Arguments.of("admin", "", "Пустой пароль"),
+                Arguments.of("", "password123", "Пустой логин"),
+                Arguments.of(null, null, "Пустое body {}")
         );
-    }
-
-    @ParameterizedTest(name = "{index} => {3}")
-    @MethodSource("invalidAuthCases")
-    @DisplayName("Негативные тесты авторизации")
-    void shouldRejectInvalidAuthData(String username, String password, int expectedStatus, String description) {
-        AuthRequest requestBody = AuthRequest.builder()
-                .username(username)
-                .password(password)
-                .build();
-
-        String reason = given()
-                .contentType(ContentType.JSON)
-                .body(requestBody)  // Jackson автоматически уберёт null-поля
-                .when()
-                .post(BOOKING_URL + "/auth")
-                .then()
-                .statusCode(200)  // для этого API = 200
-                .extract().path("reason");
-
-        assertThat(reason).isEqualTo("Bad credentials");
-    }
-
-    @Test
-    @DisplayName("Сценарий 6: Отправка запроса без body")
-    void shouldNotReturnTokenWhenBodyIsMissing() {
-        String reason = given()
-                .contentType(ContentType.JSON)
-                .when()
-                .post(BOOKING_URL + "/auth")
-                .then()
-                .statusCode(200)
-                .extract().path("reason");
-
-        assertThat(reason).isEqualTo("Bad credentials");
     }
 
     static Stream<Arguments> invalidBookingCases() {
@@ -100,6 +66,43 @@ public class BookingNegativeTest {
         );
     }
 
+    @ParameterizedTest(name = "{index} => {2}")
+    @MethodSource("invalidAuthCases")
+    @DisplayName("Негативные тесты авторизации")
+    void shouldRejectInvalidAuthData(String username, String password, String description) {
+        AuthRequest requestBody = AuthRequest.builder()
+                .username(username)
+                .password(password)
+                .build();
+
+        String reason = given()
+                .contentType(ContentType.JSON)
+                .body(requestBody)
+                .when()
+                .post(BOOKING_URL + "/auth")
+                .then()
+                .statusCode(200)
+                .extract().path("reason");
+
+        assertThat(reason)
+                .as("Сценарий '%s': ожидается ошибка авторизации", description)
+                .isEqualTo("Bad credentials");
+    }
+
+    @Test
+    @DisplayName("Сценарий 6: Отправка запроса без body")
+    void shouldNotReturnTokenWhenBodyIsMissing() {
+        String reason = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .post(BOOKING_URL + "/auth")
+                .then()
+                .statusCode(200)
+                .extract().path("reason");
+
+        assertThat(reason).isEqualTo("Bad credentials");
+    }
+
     @ParameterizedTest(name = "{index} => {1}")
     @MethodSource("invalidBookingCases")
     @DisplayName("Негативные тесты создания бронирования")
@@ -115,15 +118,51 @@ public class BookingNegativeTest {
         String responseBody = response.asString();
         int statusCode = response.getStatusCode();
 
-        if (scenarioName.contains("Отсутствует обязательное поле")) {
-            assertThat(statusCode).isEqualTo(500);
+        Integer bookingId = extractBookingIdSafely(responseBody);
 
-            assertThat(responseBody).contains("Internal Server Error");
+        if (scenarioName.contains("Отсутствует обязательное поле")) {
+            assertThat(statusCode)
+                    .as("Сценарий '%s': при отсутствии обязательных полей ожидается 500", scenarioName)
+                    .isEqualTo(500);
+
+            assertThat(responseBody)
+                    .as("Сценарий '%s': ответ должен содержать текст ошибки", scenarioName)
+                    .contains("Internal Server Error");
             return;
         }
 
-        if (statusCode == 200) {
-            System.out.println("API принял невалидные данные в сценарии: " + scenarioName);
+        if (scenarioName.contains("Отрицательная цена")) {
+            assertThat(statusCode)
+                    .as("Сценарий '%s': API вернул статус", scenarioName)
+                    .isEqualTo(200);
+
+            assertThat(bookingId)
+                    .as("Сценарий '%s': API создал бронирование с отрицательной ценой (БАГ)", scenarioName)
+                    .isNotNull();
+        }
+
+        if (scenarioName.contains("Неверный формат даты")) {
+            assertThat(statusCode)
+                    .as("Сценарий '%s': API вернул статус", scenarioName)
+                    .isEqualTo(200);
+
+            assertThat(bookingId)
+                    .as("Сценарий '%s': API создал бронирование с невалидной датой (БАГ)", scenarioName)
+                    .isNotNull();
+
+            assertThat(responseBody)
+                    .as("Сценарий '%s': API должен был исказить невалидную дату", scenarioName)
+                    .contains("NaN");
+        }
+
+        if (scenarioName.contains("Дата выезда раньше даты заезда")) {
+            assertThat(statusCode)
+                    .as("Сценарий '%s': API вернул статус", scenarioName)
+                    .isEqualTo(200);
+
+            assertThat(bookingId)
+                    .as("Сценарий '%s': API создал бронирование с перепутанными датами (БАГ)", scenarioName)
+                    .isNotNull();
         }
     }
 
@@ -184,5 +223,13 @@ public class BookingNegativeTest {
         CreateBookingDTO booking = createBookingRequest();
         booking.setBookingdates(new BookingDates("2027-01-01", "2026-01-01"));
         return booking;
+    }
+
+    private static Integer extractBookingIdSafely(String responseBody) {
+        try {
+            return new JsonPath(responseBody).getInt("bookingid");
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
