@@ -4,10 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1c7acf18-9c39-4e1a-9e7f-2f5f6dd808cb" name="Changes" comment="sprint 4 cart 1">
-      <change afterPath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/dto/BookingNegativeTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/dto/AuthRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/dto/AuthRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/dto/CreateBookingDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/dto/CreateBookingDTO.java" afterDir="false" />
+    <list default="true" id="1c7acf18-9c39-4e1a-9e7f-2f5f6dd808cb" name="Changes" comment="sprint 4 cart 1.2">
+      <change afterPath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/BookingApiClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/config/BookingApiConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/config/BookingConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/config/booking.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/BookingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/BookingTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/dto/BookingNegativeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/dto/BookingNegativeTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/dto/CreateBookingDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/dto/BookingDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/dto/CreateBookingResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/bulgakov/booking/dto/CreateBookingResponse.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +59,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -77,6 +84,11 @@
     &quot;accountId&quot;: &quot;72767993-b6a6-4b9a-8f18-aa9d8b0d7e89&quot;
   }
 }</component>
+  <component name="JavaAutoRunManager">
+    <enabled-run-configurations>
+      <run-configuration type="GradleRunConfiguration" name="BookingTest" />
+    </enabled-run-configurations>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -100,18 +112,19 @@
     "Gradle.BookingTest.createBookingTest.executor": "Run",
     "Gradle.BookingTest.executor": "Run",
     "Gradle.BookingTest.shouldRejectInvalidBookingData.executor": "Run",
+    "Gradle.BookingTest.updateBookingTest.executor": "Run",
     "Gradle.LearnTst [allureServe].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "api-tests",
+    "git-widget-placeholder": "#2 on negative-tests",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/userz/IdeaProjects/LearnTst",
     "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
-  <component name="RunManager" selected="Gradle.BookingNegativeTest.shouldRejectInvalidBookingData">
+  <component name="RunManager" selected="Gradle.BookingTest.updateBookingTest">
     <configuration name="BookingNegativeTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -126,30 +139,6 @@
             <option value=":test" />
             <option value="--tests" />
             <option value="&quot;ru.bulgakov.booking.dto.BookingNegativeTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="BookingNegativeTest.shouldRejectEmptyBookingBody" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;ru.bulgakov.booking.dto.BookingNegativeTest.shouldRejectEmptyBookingBody&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -208,7 +197,7 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="BookingTest.shouldRejectInvalidBookingData" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="BookingTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -221,7 +210,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;ru.bulgakov.booking.BookingTest.shouldRejectInvalidBookingData&quot;" />
+            <option value="&quot;ru.bulgakov.booking.BookingTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -232,12 +221,43 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="BookingTest.updateBookingTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;ru.bulgakov.booking.BookingTest.updateBookingTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Gradle.BookingTest.updateBookingTest" />
+      <item itemvalue="Gradle.BookingTest" />
+      <item itemvalue="Gradle.BookingNegativeTest" />
+      <item itemvalue="Gradle.BookingNegativeTest.shouldRejectInvalidAuthData" />
+      <item itemvalue="Gradle.BookingNegativeTest.shouldRejectInvalidBookingData" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.BookingNegativeTest.shouldRejectInvalidBookingData" />
-        <item itemvalue="Gradle.BookingNegativeTest.shouldRejectEmptyBookingBody" />
-        <item itemvalue="Gradle.BookingTest.shouldRejectInvalidBookingData" />
+        <item itemvalue="Gradle.BookingTest.updateBookingTest" />
+        <item itemvalue="Gradle.BookingTest" />
         <item itemvalue="Gradle.BookingNegativeTest" />
+        <item itemvalue="Gradle.BookingNegativeTest.shouldRejectInvalidBookingData" />
         <item itemvalue="Gradle.BookingNegativeTest.shouldRejectInvalidAuthData" />
       </list>
     </recent_temporary>
@@ -258,11 +278,20 @@
       <option name="project" value="LOCAL" />
       <updated>1778954878592</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="sprint 4 cart 1.2">
+      <option name="closed" value="true" />
+      <created>1779389337441</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1779389337441</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="sprint 4 cart 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="sprint 4 cart 1" />
+    <MESSAGE value="sprint 4 cart 1.2" />
+    <option name="LAST_COMMIT_MESSAGE" value="sprint 4 cart 1.2" />
   </component>
 </project>

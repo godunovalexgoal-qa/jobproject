@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import ru.bulgakov.booking.dto.CreateBookingDTO.BookingDates;
+import ru.bulgakov.booking.dto.BookingDTO.BookingDates;
 
 import java.util.stream.Stream;
 
@@ -106,7 +106,7 @@ public class BookingNegativeTest {
     @ParameterizedTest(name = "{index} => {1}")
     @MethodSource("invalidBookingCases")
     @DisplayName("Негативные тесты создания бронирования")
-    void shouldRejectInvalidBookingData(CreateBookingDTO booking, String scenarioName) {
+    void shouldRejectInvalidBookingData(BookingDTO booking, String scenarioName) {
         var response = given()
                 .contentType(ContentType.JSON)
                 .body(booking)
@@ -184,8 +184,8 @@ public class BookingNegativeTest {
         assertThat(responseBody).contains("Internal Server Error");
     }
 
-    private static CreateBookingDTO createBookingRequest() {
-        CreateBookingDTO booking = new CreateBookingDTO();
+    public static BookingDTO createBookingRequest() {
+        BookingDTO booking = new BookingDTO();
         booking.setFirstname("Barack");
         booking.setLastname("Obama");
         booking.setTotalprice(1000);
@@ -195,32 +195,32 @@ public class BookingNegativeTest {
         return booking;
     }
 
-    private static CreateBookingDTO createBookingWithoutFirstname() {
-        CreateBookingDTO booking = createBookingRequest();
+    private static BookingDTO createBookingWithoutFirstname() {
+        BookingDTO booking = createBookingRequest();
         booking.setFirstname(null);
         return booking;
     }
 
-    private static CreateBookingDTO createBookingWithoutLastname() {
-        CreateBookingDTO booking = createBookingRequest();
+    private static BookingDTO createBookingWithoutLastname() {
+        BookingDTO booking = createBookingRequest();
         booking.setLastname(null);
         return booking;
     }
 
-    private static CreateBookingDTO createBookingWithNegativePrice() {
-        CreateBookingDTO booking = createBookingRequest();
+    private static BookingDTO createBookingWithNegativePrice() {
+        BookingDTO booking = createBookingRequest();
         booking.setTotalprice(-500);
         return booking;
     }
 
-    private static CreateBookingDTO createBookingWithInvalidDate() {
-        CreateBookingDTO booking = createBookingRequest();
+    private static BookingDTO createBookingWithInvalidDate() {
+        BookingDTO booking = createBookingRequest();
         booking.setBookingdates(new BookingDates("не-дата", "2027-01-01"));
         return booking;
     }
 
-    private static CreateBookingDTO createBookingWithCheckoutBeforeCheckin() {
-        CreateBookingDTO booking = createBookingRequest();
+    private static BookingDTO createBookingWithCheckoutBeforeCheckin() {
+        BookingDTO booking = createBookingRequest();
         booking.setBookingdates(new BookingDates("2027-01-01", "2026-01-01"));
         return booking;
     }
