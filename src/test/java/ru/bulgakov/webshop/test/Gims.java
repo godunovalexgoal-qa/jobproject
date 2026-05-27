@@ -10,6 +10,7 @@ import ru.bulgakov.webshop.TestBase;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Selenide.$;
+import static java.time.Duration.ofSeconds;
 
 public class Gims extends TestBase {
     @Test
@@ -26,13 +27,13 @@ public class Gims extends TestBase {
         $("#gims_simulator_form_send").shouldBe(visible).click();
         sleep(3000);
         $$(".answers-label").first().click();
-        $(".button-step").shouldBe(visible).shouldBe(enabled).click();
-        $(".button-step").shouldBe(visible).shouldBe(enabled).click();
+        $(".button-step").shouldBe(visible).shouldBe(enabled, ofSeconds(10)).click();
+        $(".button-step").shouldBe(visible).shouldBe(enabled, ofSeconds(10)).click();
         while (!$("[data-name='question-number']").shouldBe(visible).getText().equals(numberList)) {
             sleep(3000);
             $$(".answers-label").first().click();
-            $(".button-step").shouldBe(visible).shouldBe(enabled).click();
-            $(".button-step").shouldBe(visible).shouldBe(enabled).click();
+            $(".button-step").shouldBe(visible).shouldBe(enabled, ofSeconds(10)).click();
+            $(".button-step").shouldBe(visible).shouldBe(enabled, ofSeconds(10)).click();
         }
         $("[data-name='question-number']").shouldHave(text(numberList));
 
