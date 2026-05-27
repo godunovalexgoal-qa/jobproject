@@ -7,10 +7,9 @@ import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import ru.bulgakov.webshop.TestBase;
 
-import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Condition.visible;
 
 public class Gims extends TestBase {
     @Test
@@ -27,13 +26,13 @@ public class Gims extends TestBase {
         $("#gims_simulator_form_send").shouldBe(visible).click();
         sleep(3000);
         $$(".answers-label").first().click();
-        $(".button-step").shouldBe(visible).click();
-        $(".button-step").shouldBe(visible).click();
+        $(".button-step").shouldBe(visible).shouldBe(enabled).click();
+        $(".button-step").shouldBe(visible).shouldBe(enabled).click();
         while (!$("[data-name='question-number']").shouldBe(visible).getText().equals(numberList)) {
             sleep(3000);
             $$(".answers-label").first().click();
-            $(".button-step").shouldBe(visible).click();
-            $(".button-step").shouldBe(visible).click();
+            $(".button-step").shouldBe(visible).shouldBe(enabled).click();
+            $(".button-step").shouldBe(visible).shouldBe(enabled).click();
         }
         $("[data-name='question-number']").shouldHave(text(numberList));
 
