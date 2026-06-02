@@ -9,6 +9,8 @@ import ru.bulgakov.booking.dto.AuthRequest;
 import ru.bulgakov.booking.dto.AuthResponse;
 import ru.bulgakov.booking.dto.BookingDTO;
 
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 import static ru.bulgakov.booking.config.BookingApiConfig.getBookingConfig;
 
@@ -16,6 +18,7 @@ public class BookingApiClient {
     private static final BookingConfig CFG = getBookingConfig();
 
     private final RequestSpecification spec = new RequestSpecBuilder()
+            .setBaseUri(CFG.bookingUrl())
             .setContentType(ContentType.JSON)
             .build();
 
@@ -23,16 +26,24 @@ public class BookingApiClient {
     public Response auth(String user, String password) {
         return given(spec)
                 .body(new AuthRequest(user, password))
-                .post(CFG.bookingUrl() + "/auth")
+                .post("/auth")
                 .then()
                 .extract().response();
     }
 
     public Response getBooking(Integer id) {
-        return given()
-                .cookie("token", getToken())
+        return given(spec)
                 .pathParam("BOOKING_ID", id)
-                .get(CFG.bookingUrl() + "/booking/{BOOKING_ID}")
+                .get("/booking/{BOOKING_ID}")
+                .then()
+                .extract().response();
+    }
+
+    public Response getBookings(Map<String, Object> queryParams) {
+        return given(spec)
+                .queryParams(queryParams)
+                .log().params()
+                .get("/booking")
                 .then()
                 .extract().response();
     }
@@ -40,7 +51,7 @@ public class BookingApiClient {
     public Response createBooking(BookingDTO bookingDTO) {
         return given(spec)
                 .body(bookingDTO)
-                .post(CFG.bookingUrl() + "/booking")
+                .post("/booking")
                 .then()
                 .extract().response();
     }
@@ -50,7 +61,7 @@ public class BookingApiClient {
                 .cookie("token", getToken())
                 .body(bookingDTO)
                 .pathParam("BOOKING_ID", id)
-                .put(CFG.bookingUrl() + "/booking/{BOOKING_ID}")
+                .put("/booking/{BOOKING_ID}")
                 .then()
                 .extract().response();
     }
@@ -60,16 +71,16 @@ public class BookingApiClient {
                 .cookie("token", getToken())
                 .body(bookingDTO)
                 .pathParam("BOOKING_ID", id)
-                .patch(CFG.bookingUrl() + "/booking/{BOOKING_ID}")
+                .patch("/booking/{BOOKING_ID}")
                 .then()
                 .extract().response();
     }
 
     public Response deleteBooking(Integer id) {
-        return given()
+        return given(spec)
                 .cookie("token", getToken())
                 .pathParam("BOOKING_ID", id)
-                .delete(CFG.bookingUrl() + "/booking/{BOOKING_ID}")
+                .delete("/booking/{BOOKING_ID}")
                 .then()
                 .extract().response();
     }
