@@ -1,5 +1,6 @@
 package ru.bulgakov.webshop.test;
 
+import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.openqa.selenium.chrome.ChromeOptions;
 import ru.bulgakov.webshop.TestBase;
 
 import static com.codeborne.selenide.Condition.text;
@@ -18,36 +20,33 @@ import static java.time.Duration.ofSeconds;
 
 public class Gims extends TestBase {
 
-    @AfterEach
-    void tearDown(TestInfo testInfo) {
-        String testName = testInfo.getDisplayName();
-
-        System.out.println("\n" + "=".repeat(60));
-        System.out.println("ЗАВЕРШЕНИЕ ТЕСТА: " + testName);
-        System.out.println("=".repeat(60));
-
-        try {
-            String currentUrl = WebDriverRunner.url();
-            System.out.println("✓ Текущий URL: " + currentUrl);
-        } catch (Exception e) {
-            System.err.println("✗ Ошибка при получении информации: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        System.out.println("=".repeat(60) + "\n");
-    }
-
+    // 🔧 Вызываем один раз перед тестом
     @Test
     @DisplayName("Тест прогона до нужного вопроса")
     @Tags({@Tag("UI"), @Tag("positive")})
     void studyGimsTest() {
-        String numberList = System.getProperty("QUESTION_NUMBER", "8");
+        // 🎯 Настройки для стабильной работы в Selenoid
+        Configuration.pageLoadStrategy = "eager"; // не ждать полной загрузки ресурсов
+        Configuration.browserCapabilities.setCapability("selenoid:options",
+                java.util.Map.of(
+                        "enableVNC", false,
+                        "enableLog", true,
+                        "sessionTimeout", "5m"
+                ));
 
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-dev-shm-usage"); // обход проблем с /dev/shm
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--window-size=1920,1080");
+        Configuration.browserCapabilities.merge(options);
+
+        String numberList = System.getProperty("QUESTION_NUMBER", "8");
         System.out.println(">>> Начало теста. Целевой вопрос: " + numberList);
 
         open("https://digital.mchs.gov.ru/gims/simulator");
         $$(".form-check-label").last().click();
-        $("#gims_simulator_form_send").shouldBe(visible).click();
+        $("#gims_simulator_form_send").shouldBe(visible, ofSeconds(20)).click();
         sleep(3000);
 
         $$(".answers-label").first().click();
@@ -59,60 +58,69 @@ public class Gims extends TestBase {
             $$(".answers-label").first().click();
             clickAnswerButton();
             clickAnswerButton();
+
+            // 🔄 Каждые 100 вопросов — мягкая перезагрузка страницы (сброс памяти)
+            try {
+                int q = Integer.parseInt($("[data-name='question-number']").getText());
+                if (q % 100 == 0 && q > 0) {
+                    System.out.println("🔄 Перезагрузка страницы после вопроса " + q);
+                    refresh();
+                    $("[data-name='question-number']").shouldBe(visible, ofSeconds(15));
+                }
+            } catch (Exception ignored) {}
         }
         $("[data-name='question-number']").shouldHave(text(numberList));
 
         System.out.println(">>> Тест успешно завершён!");
     }
 
-    /**
-     * 🔑 1. Адаптивные таймауты + 2. Retry + 3. Проверка выбора ответа
-     */
     private void clickAnswerButton() {
-        // Определяем номер текущего вопроса для адаптивных таймаутов
-        int timeout = 15; // базовый таймаут
+        int timeout = 15;
         try {
             String qNum = $("[data-name='question-number']").getText();
             int num = Integer.parseInt(qNum);
-            // 🔑 1. Адаптивные таймауты: для поздних вопросов увеличиваем
             if (num > 700) timeout = 30;
-        } catch (Exception e) {
-            // Если не удалось получить номер — используем базовый таймаут
-        }
+        } catch (Exception e) {}
 
-        // 🔑 2. Retry логика: пробуем до 3 раз, если кнопка не активируется
         int retry = 0;
         int maxRetry = 3;
 
         while (retry < maxRetry) {
             try {
-                // 🔑 3. Проверка: ждём enabled перед кликом
                 $(".button-step")
                         .shouldBe(visible, ofSeconds(timeout))
                         .shouldBe(enabled, ofSeconds(timeout))
                         .click();
-
-                // Если клик прошёл без ошибки — выходим из цикла retry
                 return;
-
             } catch (Exception e) {
                 retry++;
-                System.out.println("⚠ Попытка клика #" + retry + " не удалась, пробую ещё...");
+                System.out.println("⚠ Попытка клика #" + retry + " не удалась");
                 sleep(500);
-
-                // Перед повторной попыткой ещё раз кликаем по ответу (на случай, если сбросился)
                 if (retry < maxRetry) {
                     $$(".answers-label").first().click();
                 }
             }
         }
-
-        // Если все попытки исчерпаны — пробую кликнуть в любом случае (последняя надежда)
         try {
             $(".button-step").shouldBe(visible).click();
         } catch (Exception e) {
-            System.err.println("✗ Не удалось кликнуть по кнопке после " + maxRetry + " попыток");
+            System.err.println("✗ Не удалось кликнуть после " + maxRetry + " попыток");
             throw e;
         }
+    }
+
+    @AfterEach
+    void tearDown(TestInfo testInfo) {
+        String testName = testInfo.getDisplayName();
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("ЗАВЕРШЕНИЕ ТЕСТА: " + testName);
+        System.out.println("=".repeat(60));
+        try {
+            String currentUrl = WebDriverRunner.url();
+            System.out.println("✓ Текущий URL: " + currentUrl);
+        } catch (Exception e) {
+            System.err.println("✗ Ошибка: " + e.getMessage());
+        }
+        System.out.println("=".repeat(60) + "\n");
     }
 }
