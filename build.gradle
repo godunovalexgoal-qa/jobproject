@@ -1,16 +1,88 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version "3.0.2"
+    id 'io.freefair.lombok' version "9.5.0"
 }
+
+def allureVersion = "2.33.0"
+
+allure {
+    report {
+        version.set(allureVersion)          // Устанавливаем версию Allure
+    }
+
+    adapter {
+        aspectjWeaver.set(true)             // Включаем AspectJ weaving для Allure
+
+        frameworks {
+            junit5 {
+                adapterVersion.set(allureVersion)  // Версия адаптера для JUnit 5
+            }
+        }
+    }
+}
+
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    testImplementation "io.qameta.allure:allure-junit5:$allureVersion"
+    testImplementation "io.qameta.allure:allure-selenide:$allureVersion"
+    testImplementation "io.qameta.allure:allure-rest-assured:$allureVersion"
+    testImplementation "io.qameta.allure:allure-assertj:$allureVersion"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
     testImplementation 'com.codeborne:selenide:7.14.0'
+    testImplementation 'net.datafaker:datafaker:2.5.4'
+    testImplementation 'org.aeonbits.owner:owner:1.0.12'
+    testImplementation 'io.rest-assured:rest-assured:6.0.0'
+    testImplementation 'tools.jackson.core:jackson-databind:3.1.3'
+    testImplementation 'org.assertj:assertj-core:3.27.7'
+
 }
 
 test {
     useJUnitPlatform()
+    systemProperties(System.getProperties())
 }
+
+task uiTest(type: Test) {
+    useJUnitPlatform {
+        def tag = System.getProperty("tag")
+        // если тэг указан - запускаем ui + тэг тест
+        // если нет - только ui
+        if (tag != null && !tag.isBlank()) {
+            includeTags("UI & ${tag}")
+        } else {
+            includeTags("UI")
+        }
+    }
+    systemProperties(System.getProperties())
+}
+
+task apiTest(type: Test) {
+    useJUnitPlatform {
+        def tag = System.getProperty("tag")
+        // если тэг указан - запускаем ui + тэг тест
+        // если нет - только ui
+        if (tag != null && !tag.isBlank()) {
+            includeTags("API & ${tag}")
+        } else {
+            includeTags("API")
+        }
+    }
+    systemProperties(System.getProperties())
+}
+
+//task positiveTest(type: Test) {
+//    useJUnitPlatform {
+//        includeTags 'positive'
+//    }
+//}
+
+//task negativeTest(type: Test) {
+//    useJUnitPlatform {
+//        includeTags 'negative'
+//    }
+//}
